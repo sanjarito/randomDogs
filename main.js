@@ -1,11 +1,9 @@
 'use strict';
-
 const getRandomDogs_url = 'https://dog.ceo/api/breeds/image/random/3'
-const getRandomDog_url = 'https://dog.ceo/api/breeds/image/random/'
+const getRandomDog_url = 'https://dog.ceo/api/breeds/image/random'
 
-
-function getDogImage(numberDogs) {
-  let completeUrl = getRandomDog_url+`${numberDogs}`
+function getDogImages(numberDogs) {
+  let completeUrl = getRandomDog_url+`/${numberDogs}`
   // console.log(completeUrl)
   fetch(completeUrl)
     .then(function(response) {
@@ -13,33 +11,72 @@ function getDogImage(numberDogs) {
       return answer
     .then(function(answer){
       let imagesArray = answer.message
-      createHtmlElement(imagesArray)
+      createHtmlElements(imagesArray)
     })
     })
 }
-function watchforDog(){
-  $('button').on('click', function(){
+
+function watchforDogs(){
+  $('.submit-Api').on('click', function(){
     event.preventDefault();
     $('.images-container').empty()
     let numberValue = $('#number').val()
     if (numberValue == 0 || numberValue == null){
       numberValue = 3
-      getDogImage(numberValue)
+      getDogImages(numberValue)
     } else {
-      getDogImage(numberValue)
+      getDogImages(numberValue)
     }
     })
   }
 
-function createHtmlElement(imagesArray){
+
+function createHtmlElements(imagesArray){
   for (let i = 0; i < imagesArray.length; i++){
     let stringer = `<img src="${imagesArray[i]}">`
     $('.images-container').append(stringer)
   }
 }
 
+
+
+// CODE ON ASSIGNMENT 3 BRANCH
+function getsingleDog(breed){
+  const breedUrl = `https://dog.ceo/api/breed/${breed}/images/random`
+  console.log(breedUrl)
+  fetch(breedUrl)
+    .then(function(response) {
+      let answer = response.json()
+      console.log(answer)
+      return answer
+      })
+    .then(function(answer){
+      let dogImageUrl= answer.message
+      createHtmlElement(dogImageUrl)
+    })
+    .catch(error => console.log(error));
+}
+
+function createHtmlElement(dogImageUrl){
+    let stringer = `<img src="${dogImageUrl}">`
+
+    $('.single-image-container').append(stringer)
+  }
+
+
+function watchforDog(){
+  $('.submit-breed').on('click', function(){
+    event.preventDefault();
+    $('.images-container').empty()
+    let breedValue = $('#breed').val()
+    getsingleDog(breedValue)
+    })
+  }
+
+
 function startapp(){
   console.log('start app working')
+  watchforDogs();
   watchforDog();
 };
 startapp();
